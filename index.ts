@@ -72,17 +72,7 @@ app.get('/private', async(req,res)=>{
 
 app.get('/publicKey', async(req,res)=>{
 
-    let {token} = req.query;
-
-    let loginManager = new LoginManager();
-
-    let loginResponse = await loginManager.privatePath(token)
-        .catch(err=>{
-            console.log(err);
-        })
-
-    res.status(200).send(loginResponse);
-
+    res.status(200).send({publicKey:AppConfig.jwt.accessToken.publicToken});
 
 });
 
