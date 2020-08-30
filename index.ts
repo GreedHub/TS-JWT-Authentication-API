@@ -2,11 +2,13 @@ const express = require('express');
 const cors = require("cors");
 const app = express();
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 import { AppConfig } from './require/config/AppConfig';
 import { LoginManager } from './require/classes/LoginManager';
 
 app.use(bodyParser.json({limit: '100mb',parameterLimit: 100000, extended: true})); // support json encoded bodies
 app.use(bodyParser.urlencoded({limit: '100mb',parameterLimit: 100000, extended: true})); // support encoded bodies
+app.use(cookieParser());
 app.use(cors());
 
 app.post('/register', async(req, res)=> {
@@ -26,13 +28,13 @@ app.post('/register', async(req, res)=> {
 
 app.post('/login', async(req, res)=> {
 
-    let {username,password} = req.body;
+    let {username,password,device} = req.body;
 
     let loginManager = new LoginManager();
 
-    let loginResponse = await loginManager.authenticateUser(username,password)
+    let loginResponse = await loginManager.authenticateUser(username,password,device)
         .catch(err=>{
-            console.log(err);
+            res.status(401).send(err);
         })
 
     res.status(200).send(loginResponse);
@@ -47,7 +49,22 @@ app.post('/token', async(req, res)=> {
 
     let loginResponse = await loginManager.refreshToken(refreshToken)
         .catch(err=>{
-            console.log(err);
+            res.status(401).send(err);
+        })
+
+    res.status(200).send(loginResponse);
+    
+});
+
+app.delete('/token', async(req, res)=> {
+
+    let {refreshToken} = req.body;
+
+    let loginManager = new LoginManager();
+
+    let loginResponse = await loginManager.invalidateRefreshToken(refreshToken)
+        .catch(err=>{
+            res.status(401).send(err);
         })
 
     res.status(200).send(loginResponse);
@@ -56,7 +73,7 @@ app.post('/token', async(req, res)=> {
 
 app.get('/private', async(req,res)=>{
 
-    let {token} = req.query;
+    let {token} = req.cookies;
 
     let loginManager = new LoginManager();
 

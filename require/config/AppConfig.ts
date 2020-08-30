@@ -8,16 +8,16 @@ const AppConfig = {
     },
     db: {
         host: process.env.DB_HOST,
+        name: process.env.DB_NAME,
+        port: process.env.DB_PORT,
         user: process.env.DB_USER,
-        password: process.env.DB_PASS,
-        schema: process.env.DB_SCHEMA 
-
+        pass: process.env.DB_PASS,
     },
     jwt:{
         accessToken: {
             publicToken: fs.readFileSync('./keys/accessPublic.pem', 'utf8'),
             privateToken: fs.readFileSync('./keys/accessPrivate.pem', 'utf8'),
-            passphrase: process.env.JWT_PASSPHRASE,
+            passphrase: process.env.JWT_ACCESS_PASSPHRASE,
             options: {
                 algorithm: 'RS512', 
                 keyid: '1', 
