@@ -1,4 +1,5 @@
-require('dotenv').config({ path: './EnvVars.env' })
+require('dotenv').config({ path: './EnvVars.env' });
+const fs = require('fs');
 
 const AppConfig = {
 
@@ -14,14 +15,28 @@ const AppConfig = {
     },
     jwt:{
         accessToken: {
-            publicToken: process.env.JWT_PUBLIC,
-            privateToken: process.env.JWT_PRIVATE,
-            options: {algorithm: 'HS512', keyid: '1', noTimestamp: false, expiresIn: '15m', notBefore: '2s' },
+            publicToken: fs.readFileSync('./keys/accessPublic.pem', 'utf8'),
+            privateToken: fs.readFileSync('./keys/accessPrivate.pem', 'utf8'),
+            passphrase: process.env.JWT_PASSPHRASE,
+            options: {
+                algorithm: 'RS512', 
+                keyid: '1', 
+                noTimestamp: false, 
+                expiresIn: '15m', 
+                notBefore: '2s' 
+            },
         },
         refreshToken: {
-            publicToken: process.env.JWT_REFRESH_PUBLIC,
-            privateToken: process.env.JWT_REFRESH_PRIVATE,
-            options: {algorithm: 'HS512', keyid: '1', noTimestamp: false, expiresIn: '30d', notBefore: '2s' },
+            publicToken: fs.readFileSync('./keys/refreshPublic.pem', 'utf8'),
+            privateToken: fs.readFileSync('./keys/refreshPrivate.pem', 'utf8'),
+            passphrase: process.env.JWT_REFRESH_PASSPHRASE,
+            options: {
+                algorithm: 'RS512', 
+                keyid: '1', 
+                noTimestamp: false, 
+                expiresIn: '30d', 
+                notBefore: '2s' 
+            },
         },
         
     }

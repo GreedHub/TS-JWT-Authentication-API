@@ -20,7 +20,7 @@ class TokenGenerator  {
   isValidToken(token:string){
 
     /* TODO: check how to validate with public key */
-    return jwt.verify(token,this.secretOrPrivateKey,(err, decoded)=>{
+    return jwt.verify(token,this.secretOrPublicKey,(err, decoded)=>{
     
         if(err){
             console.log(err);

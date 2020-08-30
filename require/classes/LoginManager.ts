@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+
 import { AppConfig } from '../config/AppConfig';
 import { SqlManager, SqlParameter } from './SqlManager';
 import { TokenGenerator } from '../helpers/TokenGenerator';
@@ -8,8 +9,13 @@ let sql = new SqlManager(AppConfig.db.schema);
 sql.setDbUser(AppConfig.db.user,AppConfig.db.password);
 sql.setServer(AppConfig.db.host);
 
-const tokenGenerator = new TokenGenerator(AppConfig.jwt.accessToken.privateToken, AppConfig.jwt.accessToken.publicToken, AppConfig.jwt.accessToken.options);
-const refreshTokenGenerator = new TokenGenerator(AppConfig.jwt.refreshToken.privateToken, AppConfig.jwt.refreshToken.publicToken, AppConfig.jwt.refreshToken.options);
+
+//You need to generate 2 PEM keys in the folder ./keys
+
+const {accessToken, refreshToken} = AppConfig.jwt;
+
+const tokenGenerator = new TokenGenerator({key:accessToken.privateToken, passphrase: accessToken.passphrase}, accessToken.publicToken, accessToken.options);
+const refreshTokenGenerator = new TokenGenerator({key:refreshToken.privateToken, passphrase: refreshToken.passphrase}, refreshToken.publicToken, refreshToken.options);
 class LoginManager{
 
     registerUser(username:string,password:string,mail:string){
