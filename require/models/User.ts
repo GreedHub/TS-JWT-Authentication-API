@@ -9,7 +9,6 @@ const userSchema = new Schema({
     name: { type: String },
     lastname: { type: String },
     status: { type: String, required: true, default: "regular" },
-    lastLogin: { type: Date, default: Date.now },
     devices: { type: Array }
 }); 
 

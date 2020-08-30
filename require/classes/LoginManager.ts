@@ -6,6 +6,7 @@ import { AppConfig } from '../config/AppConfig';
 import { SqlManager, SqlParameter } from './SqlManager';
 import { TokenGenerator } from '../helpers/TokenGenerator';
 import { UserModel } from '../models/User';
+import { DeviceModel } from '../models/Device';
 
 let mongooseManager = new MongooseManager(AppConfig.db.user,AppConfig.db.pass,AppConfig.db.host,AppConfig.db.port,AppConfig.db.name);
 
@@ -77,10 +78,13 @@ class LoginManager{
             let token = tokenGenerator.sign({ myclaim: 'something' }, { audience: 'myaud', issuer: 'myissuer', jwtid: '1', subject: 'v' })
             let refreshToken = refreshTokenGenerator.sign({ user: userInfo.username , mail:userInfo.mail}, { audience: 'myaud', issuer: 'myissuer', jwtid: '1', subject: 'v' })
            
-            userInfo.devices.push({
+            let userDevice = new DeviceModel({
+                ...device,
                 refreshToken,
-                ...device
+                active:true,
             });
+
+            userInfo.devices.push(userDevice);
 
             userInfo.save();
 
@@ -103,7 +107,8 @@ class LoginManager{
             let mongoose = await mongooseManager.connect();
 
             let userQuery = await UserModel.find({
-                "devices.refreshToken": refreshToken
+                "devices.refreshToken": refreshToken,
+                "devices.active": true,
             });
 
             let userInfo:any = userQuery[0];
@@ -133,7 +138,8 @@ class LoginManager{
             let mongoose = await mongooseManager.connect();
 
             let userQuery = await UserModel.find({
-                "devices.refreshToken": refreshToken
+                "devices.refreshToken": refreshToken,
+                "devices.active": true
             });
 
             let userInfo:any = userQuery[0];
@@ -143,11 +149,18 @@ class LoginManager{
                 return;
             }
 
-            userInfo.devices = userInfo.devices.filter(device => device.refreshToken != refreshToken);
+            userInfo.devices = userInfo.devices.map(_device=>{
+                if(_device.refreshToken == refreshToken)
+                    _device.active = false
+
+                return _device;
+            })
+                        
+            userInfo.markModified('devices');
 
             userInfo.save();
 
-            resolve("Token invalidated");
+            resolve("token invalidated")
             
         });
     }
