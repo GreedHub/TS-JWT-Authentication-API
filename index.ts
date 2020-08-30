@@ -19,7 +19,7 @@ app.post('/register', async(req, res)=> {
 
     let loginResponse = await loginManager.registerUser(username,password,mail)
         .catch(err=>{
-            console.log(err);
+            res.status(400).send(err);
         })
 
     res.status(200).send(loginResponse);

@@ -42,9 +42,14 @@ class LoginManager{
             });
 
             user.save((err,document)=>{
-                if(err) { console.log(err); reject(false);return}
+                if(err) { 
+                    let msg = "Registration failed: ";
+                    msg += err.code == 11000 ? "User already exists" : err.code;
+                    reject(msg);
+                    return;
+                }
 
-                resolve(true);
+                resolve("Registration successful");
             });
 
         });
