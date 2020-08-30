@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const AppConfig = require('../config/AppConfig');
+import { AppConfig } from '../config/AppConfig';
 import { SqlManager, SqlParameter } from './SqlManager';
 import { TokenGenerator } from '../helpers/TokenGenerator';
 
@@ -12,7 +12,7 @@ const tokenGenerator = new TokenGenerator(AppConfig.jwt.accessToken.privateToken
 const refreshTokenGenerator = new TokenGenerator(AppConfig.jwt.refreshToken.privateToken, AppConfig.jwt.refreshToken.publicToken, AppConfig.jwt.refreshToken.options);
 class LoginManager{
 
-    registerUser(user,password,mail){
+    registerUser(username:string,password:string,mail:string){
 
         return new Promise(async (resolve,reject)=>{
 
@@ -25,7 +25,7 @@ class LoginManager{
             const id_role = 2;
 
             let params = [
-                new SqlParameter("user",user),
+                new SqlParameter("user",username),
                 new SqlParameter("password",encryptedPassword),
                 new SqlParameter("mail",mail),
                 new SqlParameter("salt",salt),
@@ -47,7 +47,7 @@ class LoginManager{
 
     }
 
-    authenticateUser(username,password){
+    authenticateUser(username:string,password:string){
 
         return new Promise(async (resolve,reject)=>{
 

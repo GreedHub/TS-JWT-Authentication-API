@@ -2,6 +2,9 @@ require('dotenv').config({ path: './EnvVars.env' })
 
 const AppConfig = {
 
+    api:{
+        exposedPort: process.env.EXPOSED_PORT,
+    },
     db: {
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
@@ -25,4 +28,4 @@ const AppConfig = {
 
 }
 
-module.exports = AppConfig;
+export {AppConfig};

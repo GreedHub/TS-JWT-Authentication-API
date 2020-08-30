@@ -1,25 +1,25 @@
 ### Register
-POST http://localhost:3000/register 
+POST http://localhost:5000/register 
 content-type: application/json
 
 {
-    "user":"testUser",
+    "username":"testUser",
     "password": "testPassword",
     "mail": "test@user.com"
 }
 
 
 ### Login
-POST http://localhost:3000/login 
+POST http://localhost:5000/login 
 content-type: application/json
 
 {
-    "user":"testUser",
+    "username":"testUser",
     "password": "testPassword"
 }
 
 ### Token
-POST http://localhost:3000/token 
+POST http://localhost:5000/token 
 content-type: application/json
 
 {
@@ -27,7 +27,7 @@ content-type: application/json
 }
 
 ### Private route example
-GET http://localhost:3000/private?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6IjEifQ.eyJteWNsYWltIjoic29tZXRoaW5nIiwiaWF0IjoxNTk4Nzg4NjA5LCJuYmYiOjE1OTg3ODg2MTEsImV4cCI6MTU5ODc4OTUwOSwiYXVkIjoibXlhdWQiLCJpc3MiOiJteWlzc3VlciIsInN1YiI6InYiLCJqdGkiOiIxIn0.kosur0h8mnq6Kog66xPUTaXOAEQnDbM5WHdwZPIB_LwsVGPeUh_JHls5DvgIrJ0Yk6eh3_jd0eOnFJtYkwMwvA
+GET http://localhost:5000/private?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6IjEifQ.eyJteWNsYWltIjoic29tZXRoaW5nIiwiaWF0IjoxNTk4Nzg4NjA5LCJuYmYiOjE1OTg3ODg2MTEsImV4cCI6MTU5ODc4OTUwOSwiYXVkIjoibXlhdWQiLCJpc3MiOiJteWlzc3VlciIsInN1YiI6InYiLCJqdGkiOiIxIn0.kosur0h8mnq6Kog66xPUTaXOAEQnDbM5WHdwZPIB_LwsVGPeUh_JHls5DvgIrJ0Yk6eh3_jd0eOnFJtYkwMwvA
 
 content-type: application/json
 
