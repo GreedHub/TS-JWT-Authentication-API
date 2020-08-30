@@ -1,0 +1,34 @@
+### Register
+POST http://localhost:3000/register 
+content-type: application/json
+
+{
+    "user":"testUser",
+    "password": "testPassword",
+    "mail": "test@user.com"
+}
+
+
+### Login
+POST http://localhost:3000/login 
+content-type: application/json
+
+{
+    "user":"testUser",
+    "password": "testPassword"
+}
+
+### Token
+POST http://localhost:3000/token 
+content-type: application/json
+
+{
+    "refreshToken": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6IjEifQ.eyJ1c2VyIjoicGVwZSIsIm1haWwiOiJwZXBlQHBlcGUuY29tIiwiaWF0IjoxNTk4Nzg2ODE2LCJuYmYiOjE1OTg3ODY4MTgsImV4cCI6MTYwMTM3ODgxNiwiYXVkIjoibXlhdWQiLCJpc3MiOiJteWlzc3VlciIsInN1YiI6InYiLCJqdGkiOiIxIn0.CRMR25Oe9AqCG9TpxeVzRpp4ctD1qU9Fq-jgGiMZ8UFyLHdiIEAn_3s9E1XkBOQNfCH1tIN0QFb_xV-jI_UYiA"
+}
+
+### Private route example
+GET http://localhost:3000/private?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6IjEifQ.eyJteWNsYWltIjoic29tZXRoaW5nIiwiaWF0IjoxNTk4Nzg4NjA5LCJuYmYiOjE1OTg3ODg2MTEsImV4cCI6MTU5ODc4OTUwOSwiYXVkIjoibXlhdWQiLCJpc3MiOiJteWlzc3VlciIsInN1YiI6InYiLCJqdGkiOiIxIn0.kosur0h8mnq6Kog66xPUTaXOAEQnDbM5WHdwZPIB_LwsVGPeUh_JHls5DvgIrJ0Yk6eh3_jd0eOnFJtYkwMwvA
+
+content-type: application/json
+
+
