@@ -1,75 +1,53 @@
-const express = require('express');
-const cors = require("cors");
-const app = express();
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
+import cookieParser = require('cookie-parser');
+import bodyParser = require('body-parser');
+import cors = require('cors');
+import express = require('express');
 import { AppConfig } from './require/config/AppConfig';
 import { LoginManager } from './require/classes/LoginManager';
+import { tokenRouter } from './require/routes/token';
+import { authenticationRouter } from './require/routes/authentication';
 
+const { Kafka } = require('kafkajs')
+
+const kafka = new Kafka({
+  clientId: 'my-app',
+  brokers: ['192.168.0.131:9092']
+})
+
+const app = express();
 app.use(bodyParser.json({limit: '100mb',parameterLimit: 100000, extended: true})); // support json encoded bodies
 app.use(bodyParser.urlencoded({limit: '100mb',parameterLimit: 100000, extended: true})); // support encoded bodies
 app.use(cookieParser());
 app.use(cors());
+app.use(tokenRouter);
+app.use(authenticationRouter);
 
-app.post('/register', async(req, res)=> {
+app.get('/kafka',async(req,res)=>{
 
-    let {username,password,mail} = req.body;
 
-    let loginManager = new LoginManager();
+    const producer = kafka.producer()
 
-    let loginResponse = await loginManager.registerUser(username,password,mail)
-        .catch(err=>{
-            res.status(400).send(err);
-        })
+    await producer.connect()
+    await producer.send({
+    topic: 'test-topic',
+    messages: [
+        { value: 'Hello KafkaJS user!' },
+    ],
+    })
 
-    res.status(200).send(loginResponse);
+    const consumer = kafka.consumer({ groupId: 'test-group' })
 
-});
+await consumer.connect()
+await consumer.subscribe({ topic: 'test-topic', fromBeginning: true })
 
-app.post('/login', async(req, res)=> {
-
-    let {username,password,device} = req.body;
-
-    let loginManager = new LoginManager();
-
-    let loginResponse = await loginManager.authenticateUser(username,password,device)
-        .catch(err=>{
-            res.status(401).send(err);
-        })
-
-    res.status(200).send(loginResponse);
-    
-});
-
-app.post('/token', async(req, res)=> {
-
-    let {refreshToken} = req.body;
-
-    let loginManager = new LoginManager();
-
-    let loginResponse = await loginManager.refreshToken(refreshToken)
-        .catch(err=>{
-            res.status(401).send(err);
-        })
-
-    res.status(200).send(loginResponse);
-    
-});
-
-app.delete('/token', async(req, res)=> {
-
-    let {refreshToken} = req.body;
-
-    let loginManager = new LoginManager();
-
-    let loginResponse = await loginManager.invalidateRefreshToken(refreshToken)
-        .catch(err=>{
-            res.status(401).send(err);
-        })
-
-    res.status(200).send(loginResponse);
-    
-});
+await consumer.run({
+  eachMessage: async ({ topic, partition, message }) => {
+    console.log({
+      value: message.value.toString(),
+    })
+  },
+})
+})
 
 app.get('/private', async(req,res)=>{
 
@@ -79,17 +57,11 @@ app.get('/private', async(req,res)=>{
 
     let loginResponse = await loginManager.privatePath(token)
         .catch(err=>{
-            console.log(err);
+            res.status(200).send(err);;
         })
 
     res.status(200).send(loginResponse);
 
-
-});
-
-app.get('/publicKey', async(req,res)=>{
-
-    res.status(200).send({publicKey:AppConfig.jwt.accessToken.publicToken});
 
 });
 

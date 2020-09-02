@@ -112,10 +112,14 @@ class LoginManager{
             let mongoose = await mongooseManager.connect();
 
             let userQuery = await UserModel.find({
-                "devices.refreshToken": refreshToken,
-                "devices.active": true,
+                "devices": { 
+                    "$elemMatch": { 
+                        "refreshToken": refreshToken, 
+                        "active": true  
+                    } 
+                }
             });
-
+        
             let userInfo:any = userQuery[0];
 
             if(!userInfo){
@@ -143,8 +147,12 @@ class LoginManager{
             let mongoose = await mongooseManager.connect();
 
             let userQuery = await UserModel.find({
-                "devices.refreshToken": refreshToken,
-                "devices.active": true
+                "devices": { 
+                    "$elemMatch": { 
+                        "refreshToken": refreshToken, 
+                        "active": true  
+                    } 
+                }
             });
 
             let userInfo:any = userQuery[0];
@@ -173,9 +181,12 @@ class LoginManager{
     privatePath(token:string){
         return new Promise((resolve,reject)=>{    
             
-            let isValid= tokenGenerator.isValidToken(token);
+            if(!tokenGenerator.isValidToken(token)){
+                reject("Unauthorized");
+                return;
+            }
 
-            resolve(isValid) ;
+            resolve("Private path content");
             
         });
     }
